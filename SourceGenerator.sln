@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35506.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.ConsoleApp", "Demo.ConsoleApp\Demo.ConsoleApp.csproj", "{961FFA89-ABDF-4965-982D-BAC22A753CA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Generators", "Demo.Generators\Demo.Generators.csproj", "{F1E905B5-A1F3-43CE-8C22-00479A9AE928}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{D18E754B-D201-4323-8E8D-7FD3C1B2092C}"
+	ProjectSection(SolutionItems) = preProject
+		Images\1.CreateSourceGenerator.png = Images\1.CreateSourceGenerator.png
+		Images\2.SyntaxVisualizer.png = Images\2.SyntaxVisualizer.png
+		Images\3.GeneratingSourceFile.png = Images\3.GeneratingSourceFile.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB732B05-90D6-478A-8DC0-041F95A1C786}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{961FFA89-ABDF-4965-982D-BAC22A753CA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{961FFA89-ABDF-4965-982D-BAC22A753CA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{961FFA89-ABDF-4965-982D-BAC22A753CA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{961FFA89-ABDF-4965-982D-BAC22A753CA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1E905B5-A1F3-43CE-8C22-00479A9AE928}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1E905B5-A1F3-43CE-8C22-00479A9AE928}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1E905B5-A1F3-43CE-8C22-00479A9AE928}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1E905B5-A1F3-43CE-8C22-00479A9AE928}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D18E754B-D201-4323-8E8D-7FD3C1B2092C} = {EB732B05-90D6-478A-8DC0-041F95A1C786}
+	EndGlobalSection
+EndGlobal

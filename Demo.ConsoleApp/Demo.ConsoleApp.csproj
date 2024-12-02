@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+  </PropertyGroup>
+
+  <!--OutputItemType - Treat the referenced project as a code analyzer.-->
+  <!--ReferenceOutputAssemby - Do not include the project's assembly in the final build output.-->
+  <ItemGroup>
+    <ProjectReference Include="..\Demo.Generators\Demo.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssemby="false" />
+  </ItemGroup>
+
+</Project>

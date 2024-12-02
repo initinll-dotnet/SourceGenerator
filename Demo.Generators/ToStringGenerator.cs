@@ -1,6 +1,8 @@
 ﻿using Microsoft.CodeAnalysis; // Provides APIs for working with code analysis.
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax; // Contains syntax-specific nodes for C#.
 
+using System.Text;
 using System.Threading;
 
 namespace Demo.Generators;
@@ -42,10 +44,68 @@ public partial class ToStringGenerator : IIncrementalGenerator // Implements inc
         SourceProductionContext context,
         ClassDeclarationSyntax classDeclarationSyntax)
     {
+        var name = classDeclarationSyntax.Parent switch
+        {
+            BaseNamespaceDeclarationSyntax bp => bp.Name.ToString(), // Base class
+            // NamespaceDeclarationSyntax np => np.Name.ToString(), // Derived class
+            // FileScopedNamespaceDeclarationSyntax fp => fp.Name.ToString(), // Derived class
+            _ => "No namespace"
+        };
+
+        var namespaceName = name;
         var className = classDeclarationSyntax.Identifier.Text; // Extracts the class name.
-        var fileName = $"{className}.g.cs"; // Creates a generated file name.
+        var fileName = $"{namespaceName}.{className}.g.cs"; // Creates a generated file name.
+
+        var stringBuilder = new StringBuilder();
+
+        stringBuilder.Append($@"namespace {namespaceName};
+
+public partial class {className}
+{{
+    public override string ToString()
+    {{
+        return $""");
+
+        var first = true;
+
+        // getting properties of the class
+        foreach (var memberDeclarationSyntax in classDeclarationSyntax.Members)
+        {
+            if (memberDeclarationSyntax is PropertyDeclarationSyntax propertyDeclarationSyntax &&
+                propertyDeclarationSyntax.Modifiers.Any(SyntaxKind.PublicKeyword))
+            {
+                // checking if the member is of type property and is public
+                /*
+                   namespace Demo.ConsoleApp.Model; -- FileScopedNamespaceDeclarationSyntax
+
+                   public partial class Person -- ClassDeclarationSyntax
+                    {
+                        public string? FirstName { get; set; } -- PropertyDeclarationSyntax && SyntaxKind.PublicKeyword
+                        internal string? MiddleName { get; set; }
+                        public string? LastName { get; set; } -- PropertyDeclarationSyntax && SyntaxKind.PublicKeyword
+                    }
+                 */
+                if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    stringBuilder.Append("; ");
+                }
+                var propertyName = propertyDeclarationSyntax.Identifier.Text;
+                stringBuilder.Append($"{propertyName}: {{{propertyName}}}");
+            }
+        }
+
+        stringBuilder.Append($@""";
+
+    }}
+}}
+"
+);
 
         // Adds generated code to the compilation.
-        context.AddSource(hintName: fileName, source: "// Generated!");
+        context.AddSource(hintName: fileName, source: stringBuilder.ToString());
     }
 }

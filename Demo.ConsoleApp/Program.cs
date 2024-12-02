@@ -3,7 +3,7 @@
 var person = new Person
 {
     FirstName = "Tim",
-    //MiddleName = "Hello",
+    MiddleName = "Hello",
     LastName = "Cook"
 };
 

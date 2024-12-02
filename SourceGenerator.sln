@@ -9,9 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Generators", "Demo.Gen
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{D18E754B-D201-4323-8E8D-7FD3C1B2092C}"
 	ProjectSection(SolutionItems) = preProject
+		Images\0.InstallDotnetCompilerPlatformSDK.png = Images\0.InstallDotnetCompilerPlatformSDK.png
 		Images\1.CreateSourceGenerator.png = Images\1.CreateSourceGenerator.png
 		Images\2.SyntaxVisualizer.png = Images\2.SyntaxVisualizer.png
 		Images\3.GeneratingSourceFile.png = Images\3.GeneratingSourceFile.png
+		Images\4.SyntaxAPI.png = Images\4.SyntaxAPI.png
+		Images\5.DebugSourceGenerator.png = Images\5.DebugSourceGenerator.png
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB732B05-90D6-478A-8DC0-041F95A1C786}"

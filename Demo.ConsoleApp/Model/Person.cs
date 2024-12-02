@@ -1,41 +1,41 @@
 ﻿namespace Demo.ConsoleApp.Model;
 
-public class Person
+public partial class Person
 {
     public string? FirstName { get; set; }
-    //public string? MiddleName { get; set; }
+    internal string? MiddleName { get; set; }
     public string? LastName { get; set; }
 
-    public override string ToString()
-    {
-        return $"FirstName:{FirstName}; LastName:{LastName}";
+    // Implemented via soure generator
+    //public override string ToString()
+    //{
+    //    return $"FirstName:{FirstName}; LastName:{LastName}";
+    //}
 
-        /*
-         Using Reflection
+    //public override string ToString()
+    //{
+    //     // // Using Reflection
 
-        var stringBuilder = new StringBuilder();
+    //    var stringBuilder = new StringBuilder();
 
-        var isFirstRecord = true;
+    //    var isFirstRecord = true;
 
-        foreach (var propertyInfo in GetType().GetProperties())
-        {
-            if (isFirstRecord)
-            {
-                isFirstRecord = false;
-            }
-            else
-            {
-                stringBuilder.Append("; ");
-            }
+    //    foreach (var propertyInfo in GetType().GetProperties())
+    //    {
+    //        if (isFirstRecord)
+    //        {
+    //            isFirstRecord = false;
+    //        }
+    //        else
+    //        {
+    //            stringBuilder.Append("; ");
+    //        }
 
-            var propertyName = propertyInfo.Name;
-            var propertyValue = propertyInfo.GetValue(this);
-            stringBuilder.Append($"{propertyName}:{propertyValue}");            
-        }
+    //        var propertyName = propertyInfo.Name;
+    //        var propertyValue = propertyInfo.GetValue(this);
+    //        stringBuilder.Append($"{propertyName}:{propertyValue}");            
+    //    }
 
-        return stringBuilder.ToString();
-         
-         */
-    }
+    //    return stringBuilder.ToString();
+    //}
 }
-

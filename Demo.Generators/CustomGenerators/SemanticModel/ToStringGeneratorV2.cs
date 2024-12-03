@@ -97,6 +97,8 @@ internal class {ATTRIBUTE_MARKER} : System.Attribute {{ }}"; // Defines a custom
         context.AddSource(hintName: fileName, source: source); // Adds the attribute class to the generated sources.
     }
 
+    private static Dictionary<string, int> _countPerFileName = new();
+
     private static void Execute(
         SourceProductionContext context,
         ClassToGenerate? classToGenerate)
@@ -110,19 +112,28 @@ internal class {ATTRIBUTE_MARKER} : System.Attribute {{ }}"; // Defines a custom
         var className = classToGenerate.ClassName;
         var fileName = $"{namespaceName}.{className}.g.cs";
 
+        if (_countPerFileName.ContainsKey(fileName))
+        {
+            _countPerFileName[fileName]++;
+        }
+        else
+        {
+            _countPerFileName.Add(fileName, 1);
+        }
 
         var content =
-            GetContent(namespaceName, className, classToGenerate); // Generates the `ToString` method content.
+            GetContent(namespaceName, className, fileName, classToGenerate); // Generates the `ToString` method content.
 
         context.AddSource(hintName: fileName, source: content); // Adds the generated source to the compilation.
     }
 
-    private static string GetContent(string namespaceName, string className, ClassToGenerate classToGenerate)
+    private static string GetContent(string namespaceName, string className, string fileName, ClassToGenerate classToGenerate)
     {
         var stringBuilder = new StringBuilder();
 
         // Builds the class definition and `ToString` method.
-        stringBuilder.Append($@"namespace {namespaceName};
+        stringBuilder.Append($@"// Generation count: {_countPerFileName[fileName]}
+namespace {namespaceName};
 
 public partial class {className}
 {{

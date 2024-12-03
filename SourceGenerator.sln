@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{D18E75
 		Images\6.MarkerAttribute.png = Images\6.MarkerAttribute.png
 		Images\7.SemanticModel.png = Images\7.SemanticModel.png
 		Images\8.SemanticModelIterateOverMembers.png = Images\8.SemanticModelIterateOverMembers.png
+		Images\9.HowCacheWorks.png = Images\9.HowCacheWorks.png
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB732B05-90D6-478A-8DC0-041F95A1C786}"

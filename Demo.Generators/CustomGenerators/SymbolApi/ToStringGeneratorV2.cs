@@ -5,13 +5,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Demo.Generators.CustomGenerators.SemanticModel;
+namespace Demo.Generators.CustomGenerators.SymbolApi;
 
 // Declares this class as a source generator.
 [Generator]
 public partial class ToStringGeneratorV2 : IIncrementalGenerator // Implements incremental generation for efficient and optimized code creation.
 {
-    private const string GENERATOR_NAMESPACE = "Demo.Generators.CustomGenerators.SemanticModel";
+    private const string GENERATOR_NAMESPACE = "Demo.Generators.CustomGenerators.SymbolApi";
     private const string ATTRIBUTE_MARKER = "GenerateToStringV2Attribute";
 
     // Initializes the generator and registers syntax and source providers.

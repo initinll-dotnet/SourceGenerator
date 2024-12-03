@@ -1,4 +1,4 @@
-﻿using Demo.Generators.CustomGenerators.SemanticModel;
+﻿using Demo.Generators.CustomGenerators.SymbolApi;
 
 namespace Demo.ConsoleApp.Model;
 

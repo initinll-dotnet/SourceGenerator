@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Demo.Generators.CustomGenerators.SemanticModel;
+namespace Demo.Generators.CustomGenerators.SymbolApi;
 
 internal class ClassToGenerate : IEquatable<ClassToGenerate?>
 {

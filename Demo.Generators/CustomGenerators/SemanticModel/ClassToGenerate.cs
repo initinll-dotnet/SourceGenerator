@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Demo.Generators.Model;
+namespace Demo.Generators.CustomGenerators.SemanticModel;
 
 internal class ClassToGenerate
 {

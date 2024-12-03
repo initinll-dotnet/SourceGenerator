@@ -1,8 +1,8 @@
-﻿using Demo.Generators;
+﻿using Demo.Generators.CustomGenerators.SemanticModel;
 
 namespace Demo.ConsoleApp.Model;
 
-[GenerateToString]
+[GenerateToStringV2Attribute]
 public partial class Person
 {
     public string? FirstName { get; set; }

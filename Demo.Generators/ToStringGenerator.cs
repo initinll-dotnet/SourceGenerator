@@ -3,61 +3,115 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax; // Contains syntax-specific nodes for C#.
 
 using System.Text;
-using System.Threading;
 
 namespace Demo.Generators;
 
-// Marks this class as a source generator.
+// Declares this class as a source generator.
 [Generator]
-public partial class ToStringGenerator : IIncrementalGenerator // Implements incremental generator for efficient code generation.
+public partial class ToStringGenerator : IIncrementalGenerator // Implements incremental generation for efficient and optimized code creation.
 {
+    // Initializes the generator and registers syntax and source providers.
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Defines a provider that identifies class declaration nodes in the syntax tree.
-        IncrementalValuesProvider<ClassDeclarationSyntax> classes = context
+        // Creates a syntax provider that identifies class declarations with specific attributes.
+        var classes = context
             .SyntaxProvider
             .CreateSyntaxProvider(
-                predicate: static (SyntaxNode node, CancellationToken token) =>
-                {
-                    // Checks if the current syntax node is a class declaration.
-                    return node is ClassDeclarationSyntax;
-                },
-                transform: static (GeneratorSyntaxContext ctx, CancellationToken token) =>
-                {
-                    // Casts and returns the node as a ClassDeclarationSyntax.
-                    return (ClassDeclarationSyntax)ctx.Node;
-                });
+                predicate: static (node, _) => IsSyntaxTarget(node), // Checks if the node is a class with attributes.
+                transform: static (ctx, _) => GetSemanticTarget(ctx)) // Extracts the class if it has the target attribute.
+            .Where(static (target) => target is not null); // Filters out null results.
 
-        // Registers a source generator action to execute on identified class nodes.
-        context
-            .RegisterSourceOutput(
+        // Registers the main code generation action using the identified class nodes.
+        context.RegisterSourceOutput(
                 source: classes,
-                action: static (SourceProductionContext ctx, ClassDeclarationSyntax source) =>
-                {
-                    // Executes the code generation logic for each class.
-                    Execute(ctx, source);
-                });
+                action: static (ctx, source)
+                    => Execute(ctx, source!)); // Executes code generation for each valid class.
+
+        // Registers a post-initialization step to inject the `GenerateToString` attribute definition.
+        context.RegisterPostInitializationOutput(
+            callback: static (ctx)
+                => PostInitializationOutput(ctx));
     }
 
-    // Generates source code based on the provided class declaration syntax.
+    // Checks if the syntax node is a class declaration with attributes.
+    private static bool IsSyntaxTarget(SyntaxNode node)
+    {
+        return
+            node is ClassDeclarationSyntax classDeclarationSyntax && // Ensures it's a class declaration.
+            classDeclarationSyntax.AttributeLists.Count > 0; // Checks if the class has any attributes.
+    }
+
+    // Returns the class declaration if it contains the `GenerateToString` attribute.
+    private static ClassDeclarationSyntax? GetSemanticTarget(GeneratorSyntaxContext context)
+    {
+        var classDeclarationSyntax = (ClassDeclarationSyntax)context.Node;
+
+        // Iterates through the class's attribute lists.
+        foreach (var attributeListSyntax in classDeclarationSyntax.AttributeLists)
+        {
+            foreach (var attributeSyntax in attributeListSyntax.Attributes)
+            {
+                var attributeName = attributeSyntax.Name.ToString();
+
+                // Checks if the attribute matches `GenerateToString` or `GenerateToStringAttribute`.
+                if (attributeName == "GenerateToString" ||
+                    attributeName == "GenerateToStringAttribute")
+                {
+                    return classDeclarationSyntax; // Returns the class if it contains the target attribute.
+                }
+            }
+        }
+
+        return null; // Returns null if no matching attribute is found.
+    }
+
+    // Injects the `GenerateToStringAttribute` class into the compilation.
+    private static void PostInitializationOutput(IncrementalGeneratorPostInitializationContext context)
+    {
+        var fileName = "Demo.Generators.GenerateToStringAttribute.g.cs";
+        var source = @"namespace Demo.Generators;
+
+internal class GenerateToStringAttribute : System.Attribute { }"; // Defines a custom attribute for marking classes.
+
+        context.AddSource(hintName: fileName, source: source); // Adds the attribute class to the generated sources.
+    }
+
+    // Main method for generating the `ToString` method for identified classes.
     private static void Execute(
         SourceProductionContext context,
         ClassDeclarationSyntax classDeclarationSyntax)
     {
+        var (namespaceName, className, fileName) =
+            GetNames(classDeclarationSyntax); // Extracts the namespace, class name, and file name.
+
+        var content =
+            GetContent(namespaceName, className, classDeclarationSyntax); // Generates the `ToString` method content.
+
+        context.AddSource(hintName: fileName, source: content); // Adds the generated source to the compilation.
+    }
+
+    // Extracts the namespace, class name, and generates the file name.
+    private static (string namespaceName, string className, string fileName) GetNames(ClassDeclarationSyntax classDeclarationSyntax)
+    {
         var name = classDeclarationSyntax.Parent switch
         {
-            BaseNamespaceDeclarationSyntax bp => bp.Name.ToString(), // Base class
-            // NamespaceDeclarationSyntax np => np.Name.ToString(), // Derived class
-            // FileScopedNamespaceDeclarationSyntax fp => fp.Name.ToString(), // Derived class
-            _ => "No namespace"
+            BaseNamespaceDeclarationSyntax bp => bp.Name.ToString(), // Extracts namespace from base declaration.
+            _ => "No namespace" // Default if no namespace is found.
         };
 
         var namespaceName = name;
-        var className = classDeclarationSyntax.Identifier.Text; // Extracts the class name.
-        var fileName = $"{namespaceName}.{className}.g.cs"; // Creates a generated file name.
+        var className = classDeclarationSyntax.Identifier.Text;
+        var fileName = $"{namespaceName}.{className}.g.cs"; // Constructs the output file name.
 
+        return (namespaceName, className, fileName);
+    }
+
+    // Generates the `ToString` method for a given class, including all public properties.
+    private static string GetContent(string namespaceName, string className, ClassDeclarationSyntax classDeclarationSyntax)
+    {
         var stringBuilder = new StringBuilder();
 
+        // Builds the class definition and `ToString` method.
         stringBuilder.Append($@"namespace {namespaceName};
 
 public partial class {className}
@@ -68,44 +122,26 @@ public partial class {className}
 
         var first = true;
 
-        // getting properties of the class
+        // Iterates through all members of the class to find public properties.
         foreach (var memberDeclarationSyntax in classDeclarationSyntax.Members)
         {
             if (memberDeclarationSyntax is PropertyDeclarationSyntax propertyDeclarationSyntax &&
-                propertyDeclarationSyntax.Modifiers.Any(SyntaxKind.PublicKeyword))
+                propertyDeclarationSyntax.Modifiers.Any(SyntaxKind.PublicKeyword)) // Checks for public properties.
             {
-                // checking if the member is of type property and is public
-                /*
-                   namespace Demo.ConsoleApp.Model; -- FileScopedNamespaceDeclarationSyntax
-
-                   public partial class Person -- ClassDeclarationSyntax
-                    {
-                        public string? FirstName { get; set; } -- PropertyDeclarationSyntax && SyntaxKind.PublicKeyword
-                        internal string? MiddleName { get; set; }
-                        public string? LastName { get; set; } -- PropertyDeclarationSyntax && SyntaxKind.PublicKeyword
-                    }
-                 */
-                if (first)
+                if (!first)
                 {
-                    first = false;
+                    stringBuilder.Append("; "); // Separates properties with semicolons.
                 }
-                else
-                {
-                    stringBuilder.Append("; ");
-                }
+                first = false;
                 var propertyName = propertyDeclarationSyntax.Identifier.Text;
-                stringBuilder.Append($"{propertyName}: {{{propertyName}}}");
+                stringBuilder.Append($"{propertyName}: {{{propertyName}}}"); // Formats property name and value.
             }
         }
 
-        stringBuilder.Append($@""";
-
-    }}
+        stringBuilder.Append($@"""; }} // Closes the generated `ToString` method.
 }}
-"
-);
+");
 
-        // Adds generated code to the compilation.
-        context.AddSource(hintName: fileName, source: stringBuilder.ToString());
+        return stringBuilder.ToString(); // Returns the complete generated source code.
     }
 }

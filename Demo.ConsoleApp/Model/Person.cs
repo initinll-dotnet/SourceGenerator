@@ -1,5 +1,8 @@
-﻿namespace Demo.ConsoleApp.Model;
+﻿using Demo.Generators;
 
+namespace Demo.ConsoleApp.Model;
+
+[GenerateToStringAttribute]
 public partial class Person
 {
     public string? FirstName { get; set; }
